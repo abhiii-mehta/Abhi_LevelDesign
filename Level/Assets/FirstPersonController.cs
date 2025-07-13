@@ -32,6 +32,21 @@ public class FirstPersonController : MonoBehaviour
     {
         HandleLook();
         HandleMovement();
+        // Add in Update()
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, 3f)) // 3f = range
+            {
+                if (hit.collider.CompareTag("Pickup"))
+                {
+                    // Collect logic
+                    Destroy(hit.collider.gameObject); // or call a custom pickup method
+                    Debug.Log("Picked up: " + hit.collider.name);
+                }
+            }
+        }
+
     }
 
     void HandleLook()
