@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class FloatingItem : MonoBehaviour
 {
     public float floatStrength = 0.5f;       // How far it moves up and down
@@ -11,6 +12,10 @@ public class FloatingItem : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
+
+        // Make sure collider is trigger
+        Collider col = GetComponent<Collider>();
+        col.isTrigger = true;
     }
 
     void Update()
@@ -19,7 +24,19 @@ public class FloatingItem : MonoBehaviour
         float newY = Mathf.Sin(Time.time * floatSpeed) * floatStrength;
         transform.position = startPos + new Vector3(0, newY, 0);
 
-        // Rotating around Y axis
-        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+        // Rotate around Y-axis in place
+        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            // TODO: Add pickup logic here (sound, inventory, etc.)
+            Debug.Log("Picked up: " + gameObject.name);
+
+            // Destroy the pickup
+            Destroy(gameObject);
+        }
     }
 }
